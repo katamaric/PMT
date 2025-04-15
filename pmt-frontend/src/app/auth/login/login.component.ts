@@ -21,22 +21,26 @@ export class LoginComponent {
     });
   }
 
-onSubmit(): void {
+  onSubmit(): void {
     if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value).subscribe(
-        response => {
+      this.authService.login(this.loginForm.value).subscribe({
+        next: (response: any) => {
+
+          localStorage.setItem('currentUser', JSON.stringify(response));
           this.isSuccess = true;
-          this.message = response;
-          // Navigate to dashboard or home
+          this.message = 'Login successful!';
+
           setTimeout(() => {
             this.router.navigate(['/']);
           }, 1000);
         },
-        error => {
+        error: (error) => {
           this.isSuccess = false;
           this.message = error.error || 'Login failed. Please try again.';
+        },
+        complete: () => {
         }
-      );
+      });
     }
   }
 }

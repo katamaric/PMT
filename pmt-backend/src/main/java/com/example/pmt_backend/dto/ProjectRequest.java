@@ -36,5 +36,5 @@ public class ProjectRequest {
 	public void setAdminId(Long adminId) {
 		this.adminId = adminId;
 	}
-
+	
 }

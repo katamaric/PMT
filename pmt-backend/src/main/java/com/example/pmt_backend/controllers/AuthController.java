@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.pmt_backend.dto.UserDTO;
 import com.example.pmt_backend.models.User;
 import com.example.pmt_backend.services.UserService;
 
@@ -32,9 +33,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user) {
-        if (userService.login(user)) {
-            return ResponseEntity.ok("Login successful.");
+    public ResponseEntity<?> login(@RequestBody User user) {
+        User loggedInUser = userService.findByEmailAndPassword(user.getEmail(), user.getPassword());
+        if (loggedInUser != null) {
+            return ResponseEntity.ok(new UserDTO(loggedInUser));
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials.");
         }

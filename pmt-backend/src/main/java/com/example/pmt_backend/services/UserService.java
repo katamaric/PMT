@@ -49,6 +49,11 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
     
+    public User findByEmailAndPassword(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password).orElse(null);
+    }
+
+    
     public List<User> getUsersByRole(Role role) {
         return userRepository.findByRole(role);
     }
