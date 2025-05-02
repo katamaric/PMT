@@ -10,7 +10,7 @@ import { TaskService } from '../task.service';
 export class TaskDetailComponent implements OnInit {
   task: any = null;
   currentUser: any = null;
-  statuses = ['TO_DO', 'IN_PROGRESS', 'COMPLETED'];
+  taskHistory: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -25,10 +25,20 @@ export class TaskDetailComponent implements OnInit {
     const taskId = this.route.snapshot.paramMap.get('taskId');
     if (taskId && this.currentUser) {
       this.taskService.getTaskById(+taskId, this.currentUser.id).subscribe({
-        next: (res) => this.task = res,
+        next: (res) => {
+          this.task = res;
+          this.loadTaskHistory(+taskId);
+        },
         error: (err) => console.error('Failed to load task', err)
       });
     }
+  }
+
+  loadTaskHistory(taskId: number): void {
+    this.taskService.getTaskHistory(taskId).subscribe({
+      next: (history) => this.taskHistory = history,
+      error: (err) => console.error('Failed to load task history', err)
+    });
   }
 
   updateTask(): void {

@@ -32,6 +32,10 @@ export class TaskService {
     return this.http.get(`${this.baseUrl}/${taskId}`, { params });
   }
 
+  getTaskHistory(taskId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/${taskId}/history`);
+  }
+
   updateTask(taskId: number, updatedTask: any, userId: number) {
     const params = new HttpParams().set('userId', userId);
     return this.http.put(`${this.baseUrl}/${taskId}`, updatedTask, { params });

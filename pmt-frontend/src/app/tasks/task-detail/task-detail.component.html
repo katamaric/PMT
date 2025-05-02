@@ -38,4 +38,14 @@
 
     <button type="submit" [disabled]="taskForm.invalid">Update Task</button>
   </form>
+  <div *ngIf="taskHistory.length > 0" class="task-history">
+    <h3>Task History</h3>
+    <ul>
+      <li *ngFor="let entry of taskHistory">
+        <strong>{{ entry.modifiedBy.username }}</strong> made changes:
+        <p>{{ entry.changes }}</p>
+        <small>On {{ entry.timestamp | date:'short' }}</small>
+      </li>
+    </ul>
+  </div>
 </div>
