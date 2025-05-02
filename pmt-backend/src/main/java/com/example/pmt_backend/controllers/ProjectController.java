@@ -91,4 +91,14 @@ public class ProjectController {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping("/{projectId}/members")
+    public ResponseEntity<List<User>> getProjectMembers(@PathVariable Long projectId) {
+        Optional<Project> project = projectService.getProjectById(projectId);
+        if (project.isPresent()) {
+            return ResponseEntity.ok(project.get().getMembers());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

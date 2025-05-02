@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProjectCreateComponent } from './projects/project-create/project-create.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectInviteComponent } from './projects/project-invite/project-invite.component';
+import { TaskCreateComponent } from './tasks/task-create/task-create.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { ProjectInviteComponent } from './projects/project-invite/project-invite
     ProjectCreateComponent,
     DashboardComponent,
     ProjectInviteComponent,
+    TaskCreateComponent,
   ],
   imports: [
     BrowserModule,

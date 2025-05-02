@@ -9,7 +9,10 @@
     <div *ngFor="let project of adminProjects" class="project-card">
       <h4>{{ project.name }}</h4>
       <p>{{ project.description }}</p>
-      <button (click)="goToInvite(project.id)">Invite Members</button>
+      <div class="project-buttons-vertical">
+        <button (click)="goToInvite(project.id)">Invite Members</button>
+        <button [routerLink]="['/project', project.id, 'tasks', 'create']">Create New Task</button>
+      </div>
     </div>
   </div>
 </div>

@@ -5,6 +5,7 @@ import { RegisterComponent } from './auth/register/register.component';
 import { ProjectCreateComponent } from './projects/project-create/project-create.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectInviteComponent } from './projects/project-invite/project-invite.component';
+import { TaskCreateComponent } from './tasks/task-create/task-create.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' }, 
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'projects/create', component: ProjectCreateComponent },
-  { path: 'projects/:id/invite', component: ProjectInviteComponent }
+  { path: 'projects/:id/invite', component: ProjectInviteComponent },
+  { path: 'project/:id/tasks/create', component: TaskCreateComponent }
 ];
 
 @NgModule({
