@@ -10,6 +10,7 @@ import { ProjectCreateComponent } from './projects/project-create/project-create
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectInviteComponent } from './projects/project-invite/project-invite.component';
 import { TaskCreateComponent } from './tasks/task-create/task-create.component';
+import { TaskDetailComponent } from './tasks/task-detail/task-detail.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { TaskCreateComponent } from './tasks/task-create/task-create.component';
     DashboardComponent,
     ProjectInviteComponent,
     TaskCreateComponent,
+    TaskDetailComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectService } from '../projects/project.service';
+import { TaskService } from '../tasks/task.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,8 +11,13 @@ import { ProjectService } from '../projects/project.service';
 export class DashboardComponent implements OnInit {
   currentUser: any = null;
   adminProjects: any[] = [];
+  projectTasks: { [projectId: number]: any[] } = {};
 
-  constructor(private router: Router, private projectService: ProjectService) {}
+  constructor(
+    private router: Router,
+    private projectService: ProjectService,
+    private taskService: TaskService
+  ) {}
 
   ngOnInit(): void {
     const rawUser = localStorage.getItem('currentUser');
@@ -33,9 +39,24 @@ export class DashboardComponent implements OnInit {
     this.projectService.getProjectsByAdmin(adminId).subscribe({
       next: (projects) => {
         this.adminProjects = projects;
+        
+        for (const project of this.adminProjects) {
+          this.loadTasksForProject(project.id, this.currentUser.id);
+        }
       },
       error: (err) => {
         console.error('Error fetching admin projects', err);
+      }
+    });
+  }
+
+  loadTasksForProject(projectId: number, userId: number): void {
+    this.taskService.getTasksByProject(projectId, userId).subscribe({
+      next: (tasks) => {
+        this.projectTasks[projectId] = tasks;
+      },
+      error: (err) => {
+        console.error(`Error loading tasks for project ${projectId}`, err);
       }
     });
   }

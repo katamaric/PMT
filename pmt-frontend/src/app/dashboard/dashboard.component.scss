@@ -1,11 +1,11 @@
 .dashboard-container {
-  max-width: 600px;
+  max-width: 900px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: #fdfdfd;
+  background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  text-align: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  font-family: 'Segoe UI', sans-serif;
 
   h2 {
     margin-bottom: 0.5rem;
@@ -13,41 +13,122 @@
 
   p {
     margin-bottom: 2rem;
-    color: #555;
+    color: #666;
   }
 
-  button {
-    padding: 0.75rem 1.5rem;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
+  .dashboard-header {
+    text-align: right;
+    margin-bottom: 2rem;
 
-    &:hover {
-      background-color: #357ac9;
+    .primary {
+      padding: 0.5rem 1rem;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #135ba1;
+      }
     }
   }
-}
 
-.project-buttons-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  .project-card {
+    background-color: #f7f9fc;
+    border: 1px solid #e0e6ed;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
 
-  button {
-    padding: 0.6rem;
-    background-color: #3f51b5;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-    &:hover {
-      background-color: #2c3e9e;
+      h4 {
+        margin: 0;
+      }
+
+      p {
+        margin: 0.25rem 0 0;
+        color: #444;
+        font-size: 0.95rem;
+      }
+
+      .project-actions {
+        display: flex;
+        gap: 0.5rem;
+
+        button {
+          padding: 0.4rem 0.8rem;
+          background-color: #3f51b5;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          font-size: 0.85rem;
+          cursor: pointer;
+          transition: background-color 0.2s;
+
+          &:hover {
+            background-color: #303f9f;
+          }
+        }
+      }
+    }
+
+    .task-list {
+      margin-top: 1rem;
+
+      h5 {
+        margin-bottom: 0.5rem;
+        color: #555;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+          margin-bottom: 0.5rem;
+
+          .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background-color: #ffffff;
+            border: 1px solid #dfe3e8;
+            border-radius: 6px;
+
+            span {
+              font-size: 0.95rem;
+              color: #333;
+            }
+
+            em {
+              font-style: normal;
+              color: #888;
+              font-size: 0.85rem;
+            }
+
+            button {
+              padding: 0.3rem 0.6rem;
+              font-size: 0.8rem;
+              background-color: #6c757d;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+
+              &:hover {
+                background-color: #5a6268;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
