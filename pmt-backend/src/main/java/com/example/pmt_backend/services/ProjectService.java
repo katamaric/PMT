@@ -35,6 +35,12 @@ public class ProjectService {
         return projectRepository.findByAdminId(adminId);
     }
     
+    public List<Project> getProjectsByUser(Long userId) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return projectRepository.findByMembersContaining(user);
+    }
+    
     public Project createProject(Project project, Long adminId) {
         User admin = userRepository.findById(adminId)
             .orElseThrow(() -> new RuntimeException("Admin user not found!"));

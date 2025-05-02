@@ -16,6 +16,10 @@ export class ProjectService {
     return this.http.get(`${this.baseUrl}/admin/${adminId}`);
   }
 
+  getProjectsByUser(userId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/user/${userId}`);
+  }
+
   inviteMember(projectId: number, email: string, role: string, adminId: number): Observable<any> {
     return this.http.post(`${this.baseUrl}/${projectId}/invite-member?adminId=${adminId}`, {
       email,

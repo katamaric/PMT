@@ -49,6 +49,13 @@ public class ProjectController {
     public List<Project> getProjectsByAdminId(@PathVariable Long adminId) {
         return projectService.getProjectsByAdminId(adminId);
     }
+    
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Project>> getUserProjects(@PathVariable Long userId) {
+        List<Project> projects = projectService.getProjectsByUser(userId);
+        return ResponseEntity.ok(projects);
+    }
+
 
     @PostMapping
     public ResponseEntity<Project> createProject(@RequestBody ProjectRequest request) {

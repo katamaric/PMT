@@ -11,6 +11,7 @@ import { TaskService } from '../tasks/task.service';
 export class DashboardComponent implements OnInit {
   currentUser: any = null;
   adminProjects: any[] = [];
+  otherProjects: any[] = [];
   projectTasks: { [projectId: number]: any[] } = {};
 
   constructor(
@@ -26,6 +27,7 @@ export class DashboardComponent implements OnInit {
       try {
         this.currentUser = JSON.parse(rawUser.trim());
         this.loadAdminProjects(this.currentUser.id);
+        this.loadUserProjects(this.currentUser.id);
       } catch (error) {
         console.error('Error parsing user data:', error);
         this.router.navigate(['/login']);
@@ -46,6 +48,22 @@ export class DashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching admin projects', err);
+      }
+    });
+  }
+
+  loadUserProjects(userId: number): void {
+    this.projectService.getProjectsByUser(this.currentUser.id).subscribe({
+      next: (projects) => {
+        // Exclude admin-owned projects
+        this.otherProjects = projects.filter((p: any) => p.admin.id !== this.currentUser.id);
+
+        for (const project of this.otherProjects) {
+          this.loadTasksForProject(project.id, this.currentUser.id);
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching user projects', err);
       }
     });
   }
