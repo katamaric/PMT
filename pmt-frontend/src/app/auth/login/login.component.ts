@@ -31,7 +31,7 @@ export class LoginComponent {
           this.message = 'Login successful!';
 
           setTimeout(() => {
-            this.router.navigate(['/']);
+            this.router.navigate(['/dashboard']);
           }, 1000);
         },
         error: (error) => {

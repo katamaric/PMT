@@ -16,4 +16,12 @@ export class ProjectService {
     return this.http.get(`${this.baseUrl}/admin/${adminId}`);
   }
 
+  inviteMember(projectId: number, email: string, role: string, adminId: number): Observable<any> {
+    return this.http.post(`${this.baseUrl}/${projectId}/invite-member?adminId=${adminId}`, {
+      email,
+      role
+    });
+  }
+
+
 }

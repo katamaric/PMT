@@ -1,0 +1,23 @@
+<div class="project-invite-container">
+  <h2>Invite Member to Project</h2>
+
+  <form [formGroup]="inviteForm" (ngSubmit)="onSubmit()" class="invite-form">
+    <div class="form-group">
+      <label for="email">User Email</label>
+      <input type="email" id="email" formControlName="email" required />
+    </div>
+
+    <div class="form-group">
+      <label for="role">Role</label>
+      <select id="role" formControlName="role">
+        <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+      </select>
+    </div>
+
+    <button type="submit" [disabled]="!inviteForm.valid">Send Invitation</button>
+  </form>
+
+  <div *ngIf="message" [ngClass]="{ 'success-message': isSuccess, 'error-message': !isSuccess }">
+    {{ message }}
+  </div>
+</div>

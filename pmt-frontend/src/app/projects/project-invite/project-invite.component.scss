@@ -1,0 +1,59 @@
+.project-invite-container {
+  max-width: 500px;
+  margin: auto;
+  padding: 2rem;
+  background: #f8f8f8;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+
+    label {
+      display: block;
+      margin-bottom: .5rem;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: .5rem;
+      border-radius: .5rem;
+      border: 1px solid #ccc;
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: .75rem;
+    border: none;
+    border-radius: .5rem;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:disabled {
+      background-color: #aaa;
+      cursor: not-allowed;
+    }
+  }
+
+  .success-message {
+    margin-top: 1rem;
+    color: green;
+    text-align: center;
+  }
+
+  .error-message {
+    margin-top: 1rem;
+    color: red;
+    text-align: center;
+  }
+}

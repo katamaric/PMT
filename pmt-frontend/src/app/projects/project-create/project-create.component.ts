@@ -50,7 +50,7 @@ export class ProjectCreateComponent {
             next: () => {
               this.message = 'Projet created successfully !';
               this.isSuccess = true;
-              setTimeout(() => this.router.navigate(['/projects']), 2000);
+              setTimeout(() => this.router.navigate(['/dashboard']), 2000);
             },
             error: err => {
               this.message = `Error : ${err.message || 'Please try again.'}`;
