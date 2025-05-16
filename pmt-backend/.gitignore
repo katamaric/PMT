@@ -34,3 +34,7 @@ build/
 
 # Ignore mailer config
 /src/main/resources/application-secret.properties
+
+# Docker
+*.log
+.env
