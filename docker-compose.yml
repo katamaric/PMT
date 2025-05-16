@@ -15,15 +15,28 @@ services:
       - "5432:5432"
 
   backend:
-    build: .
+    build:
+      context: ./pmt-backend
     container_name: pmt_backend
     depends_on:
       - db
     environment:
       DB_USER: admin
       DB_PASS: password
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/pmt_backend
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: password
     ports:
       - "8080:8080"
+
+  frontend:
+    build:
+      context: ./pmt-frontend
+    container_name: pmt_frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
 
 volumes:
   db_data:
