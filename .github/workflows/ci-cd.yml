@@ -1,0 +1,66 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: pmt_backend
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U admin" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Backend: Setup JDK
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      # Backend: Build & test
+      - name: Build and test backend
+        working-directory: ./pmt-backend
+        run: |
+          ./mvnw clean verify
+
+      # Frontend: Setup Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Frontend: Install and test
+      - name: Install dependencies & run frontend tests
+        working-directory: ./pmt-frontend
+        run: |
+          npm ci
+          npm run test -- --watch=false --browsers=ChromeHeadless
+
+      # Frontend: Build
+      - name: Build frontend
+        working-directory: ./pmt-frontend
+        run: npm run build -- --configuration production
+
+      # Docker build backend
+      - name: Build Docker image - backend
+        run: docker build -t pmt-backend ./pmt-backend
+
+      # Docker build frontend
+      - name: Build Docker image - frontend
+        run: docker build -t pmt-frontend ./pmt-frontend

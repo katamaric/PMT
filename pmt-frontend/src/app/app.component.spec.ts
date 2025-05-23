@@ -25,6 +25,6 @@ describe('AppComponent', () => {
 
   it('should render the title in the template', () => {
     const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('PMT : Project Management Tool');
+    expect(compiled.querySelector('h1').textContent).toContain('PMT: Project Management Tool');
   });
 });
