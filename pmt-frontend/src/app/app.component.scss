@@ -18,9 +18,30 @@
   text-decoration: none;
   color: #007bff;
   font-weight: 500;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .nav-links a.active {
   font-weight: bold;
+  color: #0056b3;
+}
+
+/* Logout button styled like links */
+.nav-link-button {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-weight: 500;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 20px;
+}
+
+.nav-link-button:hover {
   color: #0056b3;
 }
