@@ -1,17 +1,22 @@
-# Use an official OpenJDK image
-FROM openjdk:17-jdk-slim
-
-# Set the working directory
+# Build the jar first using Maven
+FROM maven:3.9.0-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy the built jar (build it with Maven before running Docker)
-COPY target/pmt-backend-0.0.1-SNAPSHOT.jar app.jar
-COPY wait-for-postgres.sh wait-for-postgres.sh
+COPY pom.xml .
+COPY src ./src
 
+# Build jar
+RUN mvn package -DskipTests
+
+# Create image
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+
+# Copy jar from the build stage
+COPY --from=build /app/target/pmt-backend-0.0.1-SNAPSHOT.jar app.jar
+COPY wait-for-postgres.sh wait-for-postgres.sh
 RUN chmod +x wait-for-postgres.sh
 
-# Expose the port the app runs on
 EXPOSE 8080
 
-# Run the jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

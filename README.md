@@ -65,6 +65,8 @@ docker-compose up --build
 - Swagger UI API Documentation : http://localhost:8080/swagger-ui/index.html
 - PostgreSQL: Port 5432
 
+Note: The backend jar is now automatically built inside the Docker image to fix issues of having to run mvn package manually. This is to be sure that a fresh setup works even if you don't yet have local build artifacts. Just be sure to include --build in the command when you do so !
+
 ---
 
 ## Running Tests
