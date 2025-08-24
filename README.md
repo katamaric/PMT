@@ -29,25 +29,6 @@ PMT is a web-based project management tool that allows users to register, log in
 
 ---
 
-## Local Setup (Without Docker)
-
-### Backend
-
-```bash
-cd pmt-backend
-./mvnw spring-boot:run
-```
-
-### Frontend
-
-```bash
-cd pmt-frontend
-npm install
-ng serve
-```
-
----
-
 ## Dockerized Setup
 
 ### Prerequisites
@@ -57,7 +38,9 @@ ng serve
 ### Run Everything (Frontend + Backend + DB)
 
 ```bash
-docker-compose up --build
+docker-compose down -v
+docker-compose pull
+docker-compose up -d
 ```
 
 - Frontend: [http://localhost:4200](http://localhost:4200)
@@ -65,7 +48,10 @@ docker-compose up --build
 - Swagger UI API Documentation : http://localhost:8080/swagger-ui/index.html
 - PostgreSQL: Port 5432
 
-Note: The backend jar is now automatically built inside the Docker image to fix issues of having to run mvn package manually. This is to be sure that a fresh setup works even if you don't yet have local build artifacts. Just be sure to include --build in the command when you do so !
+Note: To ensure latest frontend changes are displayed, please don't forget to try :
+
+- Ctrl + Shift + R / Cmd + Shift + R to force refresh if using Chrome
+- Or to use a private window if using Safari to have a clean cache
 
 ---
 
@@ -110,7 +96,7 @@ cd pmt-frontend
 ng test --code-coverage
 ```
 
-The tests should then run in pop-up browser and you can view the coverage summary directly in the VSCode terminal.
+The tests should then run in a pop-up browser and you can view the coverage summary directly in the VSCode terminal.
 
 ---
 
@@ -120,5 +106,5 @@ GitHub Actions are used to:
 
 - Build and test backend and frontend
 - Build Docker images for both apps
-
-Pipeline runs on `main` branch.
+- Push images to Docker Hub
+- Run pipeline on `main` branch
