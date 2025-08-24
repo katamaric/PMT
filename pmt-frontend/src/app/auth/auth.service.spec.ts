@@ -16,10 +16,12 @@ describe('AuthService', () => {
 
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
+
+    localStorage.clear();
   });
 
   afterEach(() => {
-    httpMock.verify(); // ensure no outstanding HTTP calls
+    httpMock.verify();
   });
 
   it('should be created', () => {
@@ -40,17 +42,36 @@ describe('AuthService', () => {
     req.flush(mockResponse);
   });
 
-  it('should send POST request on login()', () => {
+  it('should send POST request on login() and store user in localStorage', () => {
     const mockUser = { email: 'test@example.com', password: 'password123' };
-    const mockResponse = { token: 'fake-jwt-token' };
+    const mockResponse = { username: 'testuser', email: 'test@example.com' };
 
     service.login(mockUser).subscribe(response => {
       expect(response).toEqual(mockResponse);
+
+      // check localStorage updated
+      const stored = localStorage.getItem('currentUser');
+      expect(stored).toContain('testuser');
+
+      service.isLoggedIn$.subscribe(isLoggedIn => {
+        expect(isLoggedIn).toBeTrue();
+      });
     });
 
     const req = httpMock.expectOne(`${apiUrl}/login`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockUser);
     req.flush(mockResponse);
+  });
+
+  it('should remove currentUser and update loggedIn on logout()', () => {
+    localStorage.setItem('currentUser', JSON.stringify({ username: 'testuser' }));
+    service.logout();
+
+    expect(localStorage.getItem('currentUser')).toBeNull();
+
+    service.isLoggedIn$.subscribe(isLoggedIn => {
+      expect(isLoggedIn).toBeFalse();
+    });
   });
 });

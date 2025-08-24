@@ -76,6 +76,7 @@ describe('AppComponent', () => {
     expect(navText).not.toContain('Login');
     expect(navText).not.toContain('Register');
   });
+  
   it('should call authService.logout() and navigate to login on logout()', () => {
     component.logout();
 
