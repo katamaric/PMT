@@ -88,6 +88,32 @@ npm run test
 
 ---
 
+## Test Coverage Reports
+
+### Backend
+
+Using Eclipse, you can run the PMTBackendApplication.java project as a Maven build, being sure to input "clean test jacoco:report" for Goals.
+
+The report summary will then be generated and can be opened through the terminal in VSCode from the root PMT project folder via :
+
+```bash
+cd pmt-backend
+open target/site/jacoco/index.html
+```
+
+### Frontend
+
+From the root PMT project folder in VSCode, you can use :
+
+```bash
+cd pmt-frontend
+ng test --code-coverage
+```
+
+The tests should then run in pop-up browser and you can view the coverage summary directly in the VSCode terminal.
+
+---
+
 ## CI/CD Pipeline
 
 GitHub Actions are used to:
