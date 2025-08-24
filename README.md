@@ -44,9 +44,7 @@ docker-compose up -d
 ```
 
 - Frontend: [http://localhost:4200](http://localhost:4200)
-- Backend: [http://localhost:8080](http://localhost:8080)
 - Swagger UI API Documentation : http://localhost:8080/swagger-ui/index.html
-- PostgreSQL: Port 5432
 
 Note: To ensure latest frontend changes are displayed, please don't forget to try :
 
