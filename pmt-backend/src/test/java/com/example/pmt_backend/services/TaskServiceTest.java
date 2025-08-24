@@ -4,6 +4,7 @@ import com.example.pmt_backend.dao.ProjectRepository;
 import com.example.pmt_backend.dao.TaskHistoryRepository;
 import com.example.pmt_backend.dao.TaskRepository;
 import com.example.pmt_backend.dao.UserRepository;
+import com.example.pmt_backend.dto.TaskDTO;
 import com.example.pmt_backend.models.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -200,5 +201,117 @@ class TaskServiceTest {
 
         assertTrue(changeLog.contains("Name changed from 'Old Task' to 'New Task'"));
         assertTrue(changeLog.contains("Description changed."));
+    }
+    
+    @Test
+    void testCreateTask_AssignedUserNotMember_Throws() {
+        User outsider = new User();
+        outsider.setId(99L);
+        task.setAssignedTo(outsider);
+
+        when(projectRepository.findById(task.getProject().getId())).thenReturn(Optional.of(project));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findById(99L)).thenReturn(Optional.of(outsider));
+
+        assertThrows(IllegalArgumentException.class, () -> taskService.createTask(task, 1L));
+    }
+    
+    @Test
+    void testUpdateTask_UserObserver_Throws() {
+        user.setRole(Role.OBSERVER);
+
+        when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        Task updatedTask = new Task("Updated Task", "Description", TaskStatus.IN_PROGRESS, 1, LocalDate.now(), project, assignedUser);
+
+        assertThrows(IllegalArgumentException.class, () -> taskService.updateTask(task.getId(), updatedTask, user.getId()));
+    }
+
+    @Test
+    void testUpdateTask_UserNotMember_Throws() {
+        User outsider = new User();
+        outsider.setId(99L);
+
+        when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
+        when(userRepository.findById(99L)).thenReturn(Optional.of(outsider));
+
+        Task updatedTask = new Task("Updated Task", "Description", TaskStatus.IN_PROGRESS, 1, LocalDate.now(), project, assignedUser);
+
+        assertThrows(IllegalArgumentException.class, () -> taskService.updateTask(task.getId(), updatedTask, 99L));
+    }
+
+    @Test
+    void testAssignTaskToUser_AssigningUserNotMember_Throws() {
+        User outsider = new User();
+        outsider.setId(99L);
+        when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
+        when(userRepository.findById(99L)).thenReturn(Optional.of(outsider));
+        when(userRepository.findById(assignedUser.getId())).thenReturn(Optional.of(assignedUser));
+
+        assertThrows(IllegalArgumentException.class, () -> taskService.assignTaskToUser(task.getId(), assignedUser.getId(), 99L));
+    }
+
+    @Test
+    void testAssignTaskToUser_AssignedUserNotMember_Throws() {
+        User outsider = new User();
+        outsider.setId(99L);
+
+        when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userRepository.findById(99L)).thenReturn(Optional.of(outsider));
+
+        assertThrows(IllegalArgumentException.class, () -> taskService.assignTaskToUser(task.getId(), 99L, user.getId()));
+    }
+
+    @Test
+    void testDeleteTask_UserObserver_Throws() {
+        user.setRole(Role.OBSERVER);
+        when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        assertThrows(IllegalArgumentException.class, () -> taskService.deleteTask(task.getId(), user.getId()));
+    }
+
+    @Test
+    void testDeleteTask_UserNotMember_Throws() {
+        User outsider = new User();
+        outsider.setId(99L);
+        when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
+        when(userRepository.findById(99L)).thenReturn(Optional.of(outsider));
+
+        assertThrows(IllegalArgumentException.class, () -> taskService.deleteTask(task.getId(), 99L));
+    }
+
+    @Test
+    void testCreateTaskFromDTO_Success() {
+        TaskDTO dto = new TaskDTO();
+        dto.setName("DTO Task");
+        dto.setDescription("DTO Description");
+        dto.setStatus(TaskStatus.TO_DO);
+        dto.setPriority(1);
+        dto.setDueDate(LocalDate.now());
+        dto.setAssignedTo(assignedUser.getId());
+
+        when(userRepository.findById(assignedUser.getId())).thenReturn(Optional.of(assignedUser));
+        when(taskRepository.save(any(Task.class))).thenReturn(task);
+
+        Task created = taskService.createTaskFromDTO(dto, project, user);
+
+        assertNotNull(created);
+        verify(emailService, times(1)).sendTaskAssignmentNotification(eq(assignedUser), any(Task.class));
+    }
+
+    @Test
+    void testCreateTaskFromDTO_AssignedUserNotMember_Throws() {
+        User outsider = new User();
+        outsider.setId(99L);
+
+        TaskDTO dto = new TaskDTO();
+        dto.setAssignedTo(99L);
+
+        when(userRepository.findById(99L)).thenReturn(Optional.of(outsider));
+
+        assertThrows(IllegalArgumentException.class, () -> taskService.createTaskFromDTO(dto, project, user));
     }
 }

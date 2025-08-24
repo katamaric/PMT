@@ -3,6 +3,9 @@ package com.example.pmt_backend.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -106,5 +109,105 @@ class UserServiceTest {
         loginAttempt.setPassword("wrongpassword");
 
         assertFalse(userService.login(loginAttempt));
+    }
+    
+    @Test
+    void getUserById_ShouldReturnUserIfExists() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
+
+        Optional<User> result = userService.getUserById(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals("testuser", result.get().getUsername());
+    }
+
+    @Test
+    void getUserById_ShouldReturnEmptyIfNotFound() {
+        when(userRepository.findById(999L)).thenReturn(Optional.empty());
+
+        Optional<User> result = userService.getUserById(999L);
+
+        assertFalse(result.isPresent());
+    }
+    
+    @Test
+    void getUsersByRole_ShouldReturnCorrectUsers() {
+        User member1 = new User();
+        member1.setId(2L);
+        member1.setRole(Role.MEMBER);
+
+        User member2 = new User();
+        member2.setId(3L);
+        member2.setRole(Role.MEMBER);
+
+        when(userRepository.findByRole(Role.MEMBER)).thenReturn(List.of(member1, member2));
+
+        var result = userService.getUsersByRole(Role.MEMBER);
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains(member1));
+        assertTrue(result.contains(member2));
+    }
+    
+    @Test
+    void deleteUser_ShouldCallRepositoryDelete() {
+        doNothing().when(userRepository).deleteById(1L);
+
+        userService.deleteUser(1L);
+
+        verify(userRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void save_ShouldCallRepositorySave() {
+        when(userRepository.save(sampleUser)).thenReturn(sampleUser);
+
+        userService.save(sampleUser);
+
+        verify(userRepository, times(1)).save(sampleUser);
+    }
+
+    @Test
+    void createUser_ShouldKeepPredefinedRole() {
+        User adminUser = new User();
+        adminUser.setUsername("admin");
+        adminUser.setEmail("admin@example.com");
+        adminUser.setPassword("pass");
+        adminUser.setRole(Role.ADMIN);
+
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        User created = userService.createUser(adminUser);
+
+        assertEquals(Role.ADMIN, created.getRole());
+        verify(userRepository, times(1)).save(adminUser);
+    }
+
+    @Test
+    void login_ShouldReturnFalseIfEmailNull() {
+        User loginAttempt = new User();
+        loginAttempt.setEmail(null);
+        loginAttempt.setPassword("password");
+
+        assertFalse(userService.login(loginAttempt));
+    }
+
+    @Test
+    void login_ShouldReturnFalseIfPasswordNull() {
+        User loginAttempt = new User();
+        loginAttempt.setEmail("test@example.com");
+        loginAttempt.setPassword(null);
+
+        when(userRepository.findByEmail("test@example.com")).thenReturn(sampleUser);
+
+        assertFalse(userService.login(loginAttempt));
+    }
+    
+    @Test
+    void getAllUsers_ShouldReturnAllUsers() {
+        when(userRepository.findAll()).thenReturn(List.of(sampleUser));
+        var result = userService.getAllUsers();
+        assertEquals(1, result.size());
+        assertEquals(sampleUser.getUsername(), result.get(0).getUsername());
     }
 }

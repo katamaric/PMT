@@ -211,6 +211,136 @@ class TaskControllerTest {
                 .param("userId", String.valueOf(invalidUserId)))
                 .andExpect(status().isBadRequest()); // Should return 400
     }
+    
+    @Test
+    void createTask_ShouldReturnForbiddenIfObserver() throws Exception {
+        user.setRole(Role.OBSERVER);
+        when(projectService.getProjectById(1L)).thenReturn(Optional.of(project));
+        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
 
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setName("Task");
+        
+        mockMvc.perform(post("/api/tasks")
+                .param("projectId", "1")
+                .param("userId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(taskDTO)))
+                .andExpect(status().isForbidden());
+    }
 
+    @Test
+    void createTask_ShouldReturnForbiddenIfUserNotMember() throws Exception {
+        User anotherUser = new User();
+        anotherUser.setId(2L);
+        anotherUser.setRole(Role.MEMBER);
+        when(projectService.getProjectById(1L)).thenReturn(Optional.of(project));
+        when(userService.getUserById(2L)).thenReturn(Optional.of(anotherUser));
+
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setName("Task");
+
+        mockMvc.perform(post("/api/tasks")
+                .param("projectId", "1")
+                .param("userId", "2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(taskDTO)))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    void updateTaskStatus_ShouldReturnForbiddenIfObserver() throws Exception {
+        user.setRole(Role.OBSERVER);
+        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(patch("/api/tasks/1/status")
+                .param("userId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"status\":\"IN_PROGRESS\"}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void updateTaskStatus_ShouldReturnBadRequestForInvalidStatus() throws Exception {
+        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(patch("/api/tasks/1/status")
+                .param("userId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"status\":\"INVALID_STATUS\"}"))
+                .andExpect(status().isBadRequest());
+    }
+    
+    @Test
+    void assignTask_ShouldReturnForbiddenIfObserverAssigning() throws Exception {
+        user.setRole(Role.OBSERVER);
+        when(taskService.getTaskById(1L)).thenReturn(Optional.of(task));
+        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
+        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(patch("/api/tasks/1/assign")
+                .param("assigningUserId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userId\":1}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void assignTask_ShouldReturnForbiddenIfAssignedUserNotMember() throws Exception {
+        User anotherUser = new User();
+        anotherUser.setId(2L);
+        anotherUser.setRole(Role.MEMBER);
+        when(taskService.getTaskById(1L)).thenReturn(Optional.of(task));
+        when(userService.getUserById(2L)).thenReturn(Optional.of(anotherUser));
+        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(patch("/api/tasks/1/assign")
+                .param("assigningUserId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"userId\":2}"))
+                .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    void deleteTask_ShouldReturnForbiddenIfObserver() throws Exception {
+        user.setRole(Role.OBSERVER);
+        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(delete("/api/tasks/1")
+                .param("userId", "1"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deleteTask_ShouldReturnBadRequestIfUserNotFound() throws Exception {
+        when(userService.getUserById(999L)).thenReturn(Optional.empty());
+
+        mockMvc.perform(delete("/api/tasks/1")
+                .param("userId", "999"))
+                .andExpect(status().isBadRequest());
+    }
+    
+    @Test
+    void updateTask_ShouldReturnForbiddenForIllegalArgument() throws Exception {
+        when(taskService.updateTask(eq(1L), any(Task.class), eq(1L)))
+                .thenThrow(new IllegalArgumentException());
+
+        mockMvc.perform(put("/api/tasks/1")
+                .param("userId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Updated Task\"}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void updateTask_ShouldReturnBadRequestForRuntimeException() throws Exception {
+        when(taskService.updateTask(eq(1L), any(Task.class), eq(1L)))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(put("/api/tasks/1")
+                .param("userId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\":\"Updated Task\"}"))
+                .andExpect(status().isBadRequest());
+    }
 }

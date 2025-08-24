@@ -102,7 +102,5 @@ public class Project {
 
 	public void setMembers(List<User> members) {
 		this.members = members;
-	}
-	
-    
+	} 
 }
