@@ -35,6 +35,17 @@ PMT is a web-based project management tool that allows users to register, log in
 
 - Docker & Docker Compose installed
 
+### IMPORTANT FIRST STEP OR ELSE BAD ERRORS FOR NOT HAVING MAIL SERVICE CREDENTIALS
+
+You must create a .env file in the root PMT folder to input the variables for :
+
+```bash
+SPRING_MAIL_USERNAME=your_username
+SPRING_MAIL_PASSWORD=your_password
+```
+
+or else task creation and updates will fail due to its link to MailTrapIO for the project requirements of email notifications. So please do not forget to do this first !
+
 ### Run Everything (Frontend + Backend + DB)
 
 ```bash
@@ -50,25 +61,6 @@ Note: To ensure latest frontend changes are displayed, please don't forget to tr
 
 - Ctrl + Shift + R / Cmd + Shift + R to force refresh if using Chrome
 - Or to use a private window if using Safari to have a clean cache
-
----
-
-## Running Tests
-
-### Backend
-
-```bash
-cd pmt-backend
-./mvnw test
-```
-
-### Frontend
-
-```bash
-cd pmt-frontend
-npm install
-npm run test
-```
 
 ---
 
@@ -95,6 +87,25 @@ ng test --code-coverage
 ```
 
 The tests should then run in a pop-up browser and you can view the coverage summary directly in the VSCode terminal.
+
+---
+
+## Else, Running Tests Normally w/o Coverage
+
+### Backend
+
+```bash
+cd pmt-backend
+./mvnw test
+```
+
+### Frontend
+
+```bash
+cd pmt-frontend
+npm install
+npm run test
+```
 
 ---
 
