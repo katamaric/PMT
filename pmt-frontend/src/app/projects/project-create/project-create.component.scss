@@ -66,25 +66,25 @@
       }
     }
   }
-
-  .success-message,
-  .error-message {
-    margin-top: 1rem;
-    padding: 0.75rem;
-    border-radius: 6px;
-    text-align: center;
-    font-weight: 500;
+  
+  .error {
+    color: #d32f2f;
+    font-size: 0.85em;
   }
-
+  
   .success-message {
-    background-color: #e0f7e9;
     color: #2e7d32;
-    border: 1px solid #a5d6a7;
+    background-color: #e8f5e9;
+    padding: 0.5em;
+    margin-top: 1rem;
+    border-radius: 4px;
   }
-
+  
   .error-message {
-    background-color: #fdecea;
-    color: #c62828;
-    border: 1px solid #f5c6cb;
+    color: #b71c1c;
+    background-color: #ffebee;
+    padding: 0.5em;
+    margin-top: 1rem;
+    border-radius: 4px;
   }
 }

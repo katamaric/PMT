@@ -59,6 +59,10 @@ export class ProjectInviteComponent implements OnInit {
           this.isSuccess = false;
         }
       });
+    } else {
+      this.inviteForm.markAllAsTouched();
+      this.message = 'Please fix errors before submitting.';
+      this.isSuccess = false;
     }
   }
 }

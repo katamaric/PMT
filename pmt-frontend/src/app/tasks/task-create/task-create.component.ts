@@ -58,14 +58,21 @@ export class TaskCreateComponent implements OnInit {
         next: () => {
           this.message = 'Task created successfully!';
           this.isSuccess = true;
-          this.taskForm.reset({ priority: 3 });
-          this.router.navigate(['/dashboard']);
+          this.taskForm.reset({ priority: 3, status: 'TO_DO' });
+          
+          setTimeout(() => {
+            this.router.navigate(['/dashboard']);
+          }, 1500);
         },
         error: err => {
-          this.message = err.error || 'Task creation failed.';
+          this.message = err.error || 'Task creation failed. Check errors in form and/or permission access.';
           this.isSuccess = false;
         }
       });
+    } else {
+      this.taskForm.markAllAsTouched();
+      this.message = 'Please fix errors before submitting.';
+      this.isSuccess = false;
     }
   }
 }

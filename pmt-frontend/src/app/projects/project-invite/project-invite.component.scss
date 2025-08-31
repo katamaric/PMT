@@ -45,15 +45,24 @@
     }
   }
 
-  .success-message {
-    margin-top: 1rem;
-    color: green;
-    text-align: center;
+  .error {
+    color: #d32f2f;
+    font-size: 0.85em;
   }
-
-  .error-message {
+  
+  .success-message {
+    color: #2e7d32;
+    background-color: #e8f5e9;
+    padding: 0.5em;
     margin-top: 1rem;
-    color: red;
-    text-align: center;
+    border-radius: 4px;
+  }
+  
+  .error-message {
+    color: #b71c1c;
+    background-color: #ffebee;
+    padding: 0.5em;
+    margin-top: 1rem;
+    border-radius: 4px;
   }
 }

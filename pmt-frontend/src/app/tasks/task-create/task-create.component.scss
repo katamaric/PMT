@@ -66,27 +66,6 @@
       }
     }
   }
-
-  .success-message,
-  .error-message {
-    margin-top: 1rem;
-    padding: 0.75rem;
-    border-radius: 6px;
-    text-align: center;
-    font-weight: 500;
-  }
-
-  .success-message {
-    background-color: #e0f7e9;
-    color: #2e7d32;
-    border: 1px solid #a5d6a7;
-  }
-
-  .error-message {
-    background-color: #fdecea;
-    color: #c62828;
-    border: 1px solid #f5c6cb;
-  }
 }
 
 select {
@@ -100,4 +79,25 @@ select {
     border-color: #3f51b5;
     outline: none;
   }
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 0.85em;
+}
+
+.success-message {
+  color: #2e7d32;
+  background-color: #e8f5e9;
+  padding: 0.5em;
+  margin-top: 1rem;
+  border-radius: 4px;
+}
+
+.error-message {
+  color: #b71c1c;
+  background-color: #ffebee;
+  padding: 0.5em;
+  margin-top: 1rem;
+  border-radius: 4px;
 }

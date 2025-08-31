@@ -41,6 +41,10 @@ export class LoginComponent {
         complete: () => {
         }
       });
+    } else {
+      this.loginForm.markAllAsTouched();
+      this.message = 'Please fix errors before submitting.';
+      this.isSuccess = false;
     }
   }
 }

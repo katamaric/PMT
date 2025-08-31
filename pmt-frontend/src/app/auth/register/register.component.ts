@@ -49,6 +49,10 @@ export class RegisterComponent {
           }
         }
       });
+    } else {
+      this.registerForm.markAllAsTouched();
+      this.message = 'Please fix errors before submitting.';
+      this.isSuccess = false;
     }
   }
 }

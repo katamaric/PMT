@@ -20,7 +20,7 @@ export class ProjectCreateComponent {
   ) {
     this.projectForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
-      description: [''],
+      description: ['', Validators.required],
       startDate: ['', Validators.required]
     });
   }
@@ -65,6 +65,10 @@ export class ProjectCreateComponent {
         this.message = 'User not connected or information missing.';
         this.isSuccess = false;
       }
+    } else {
+      this.projectForm.markAllAsTouched();
+      this.message = 'Please fix errors before submitting.';
+      this.isSuccess = false;
     }
   }
 }
