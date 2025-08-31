@@ -35,7 +35,7 @@ export class ProjectCreateComponent {
           let currentUser = JSON.parse(rawUser.trim());
 
           if (!currentUser || !currentUser.id) {
-            this.message = 'Utilisateur non connecté ou informations manquantes.';
+            this.message = 'User not connected or information missing.';
             this.isSuccess = false;
             return;
           }

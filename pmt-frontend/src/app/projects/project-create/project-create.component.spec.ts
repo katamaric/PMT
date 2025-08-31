@@ -1,11 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ProjectCreateComponent } from './project-create.component';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ProjectService } from '../project.service';
 import { of, throwError } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { By } from '@angular/platform-browser';
 
 describe('ProjectCreateComponent', () => {
   let component: ProjectCreateComponent;
@@ -33,47 +32,67 @@ describe('ProjectCreateComponent', () => {
   });
 
   it('should call createProject on submit with valid form data', () => {
-    const mockProjectData = { 
-      name: 'New Project', 
-      description: 'Test Description', 
-      startDate: '2025-06-01' 
-    };
-
+    const mockProjectData = { name: 'New Project', description: 'Test', startDate: '2025-06-01' };
     component.projectForm.setValue(mockProjectData);
-
-    const currentUser = { id: 1 };
-    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(currentUser));
-
+    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify({ id: 1 }));
     const spy = spyOn(projectService, 'createProject').and.returnValue(of({ success: true }));
 
     component.onSubmit();
 
-    expect(spy).toHaveBeenCalledWith({
-      ...mockProjectData, 
-      adminId: currentUser.id
-    });
+    expect(spy).toHaveBeenCalledWith({ ...mockProjectData, adminId: 1 });
+    expect(component.isSuccess).toBeTrue();
   });
 
-
   it('should display error message on failed project creation', () => {
-    component.projectForm.setValue({ 
-      name: 'New Project', 
-      description: 'Test Description', 
-      startDate: '2025-06-01' 
-    });
-
-    const currentUser = { id: 1 };
-    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify(currentUser));
-
-    const spy = spyOn(projectService, 'createProject').and.returnValue(throwError({ message: 'Error' }));
-    fixture.detectChanges();  // Trigger change detection
+    const mockProjectData = { name: 'New Project', description: 'Test', startDate: '2025-06-01' };
+    component.projectForm.setValue(mockProjectData);
+    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify({ id: 1 }));
+    spyOn(projectService, 'createProject').and.returnValue(throwError({ message: 'Error' }));
 
     component.onSubmit();
 
-    // Ensure the error message is displayed in the DOM
-    fixture.detectChanges();
-    const errorMessage = fixture.debugElement.query(By.css('.error-message')).nativeElement;
-    expect(errorMessage.textContent).toContain('Error');
+    expect(component.isSuccess).toBeFalse();
+    expect(component.message).toContain('Error');
   });
 
+  it('should show validation error if form is invalid', () => {
+    component.projectForm.setValue({ name: '', description: '', startDate: '' });
+    component.onSubmit();
+
+    expect(component.isSuccess).toBeFalse();
+    expect(component.message).toBe('Please fix errors before submitting.');
+  });
+
+  it('should handle missing currentUser in localStorage', () => {
+    spyOn(localStorage, 'getItem').and.returnValue(null);
+    const mockProjectData = { name: 'Project', description: 'Description', startDate: '2025-06-01' };
+    component.projectForm.setValue(mockProjectData);
+
+    component.onSubmit();
+
+    expect(component.isSuccess).toBeFalse();
+    expect(component.message).toContain('User not connected or information missing.');
+  });
+
+  it('should handle malformed currentUser JSON', () => {
+    spyOn(localStorage, 'getItem').and.returnValue('invalid-json');
+    const mockProjectData = { name: 'Project', description: 'Description', startDate: '2025-06-01' };
+    component.projectForm.setValue(mockProjectData);
+
+    component.onSubmit();
+
+    expect(component.isSuccess).toBeFalse();
+    expect(component.message).toBe('Error.');
+  });
+
+  it('should handle currentUser missing id', () => {
+    spyOn(localStorage, 'getItem').and.returnValue(JSON.stringify({ name: 'Test' }));
+    const mockProjectData = { name: 'Project', description: 'Description', startDate: '2025-06-01' };
+    component.projectForm.setValue(mockProjectData);
+
+    component.onSubmit();
+
+    expect(component.isSuccess).toBeFalse();
+    expect(component.message).toContain('User not connected or information missing.');
+  });
 });

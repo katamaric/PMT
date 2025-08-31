@@ -40,29 +40,50 @@ describe('LoginComponent', () => {
   it('should call authService.login and navigate on successful login', fakeAsync(() => {
     const mockResponse = { token: 'fake-token' };
     mockAuthService.login.and.returnValue(of(mockResponse));
+    spyOn(localStorage, 'setItem');
 
-    component.loginForm.setValue({ email: 'test@example.com', password: 'password123' });
+    component.loginForm.setValue({ email: 'test@test.com', password: 'password123' });
     component.onSubmit();
 
     expect(mockAuthService.login).toHaveBeenCalledWith({
-      email: 'test@example.com',
+      email: 'test@test.com',
       password: 'password123'
     });
 
     tick(1000); // simulate setTimeout
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
+    expect(localStorage.setItem).toHaveBeenCalledWith('currentUser', JSON.stringify(mockResponse));
     expect(component.isSuccess).toBeTrue();
     expect(component.message).toBe('Login successful!');
   }));
 
-  it('should show error message on failed login', () => {
+  it('should show error message on failed login with string', () => {
     const mockError = { error: 'Invalid credentials' };
     mockAuthService.login.and.returnValue(throwError(() => mockError));
 
-    component.loginForm.setValue({ email: 'wrong@example.com', password: 'wrongpass' });
+    component.loginForm.setValue({ email: 'wrong@test.com', password: 'wrongpass' });
     component.onSubmit();
 
     expect(component.isSuccess).toBeFalse();
     expect(component.message).toBe('Invalid credentials');
+  });
+
+  it('should show generic error if error.error is undefined', () => {
+    const mockError = { error: null };
+    mockAuthService.login.and.returnValue(throwError(() => mockError));
+
+    component.loginForm.setValue({ email: 'wrong@test.com', password: 'wrongpass' });
+    component.onSubmit();
+
+    expect(component.isSuccess).toBeFalse();
+    expect(component.message).toBe('Login failed. Please try again.');
+  });
+
+  it('should show validation error if form is invalid', () => {
+    component.loginForm.setValue({ email: '', password: '' });
+    component.onSubmit();
+
+    expect(component.isSuccess).toBeFalse();
+    expect(component.message).toBe('Please fix errors before submitting.');
   });
 });

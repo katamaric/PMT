@@ -42,20 +42,23 @@ describe('RegisterComponent', () => {
 
     component.registerForm.setValue({
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@test.com',
       password: 'password123'
     });
+
+    spyOn(component.registerForm, 'reset');
 
     component.onSubmit();
 
     expect(mockAuthService.register).toHaveBeenCalledWith({
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@test.com',
       password: 'password123'
     });
 
     expect(component.isSuccess).toBeTrue();
     expect(component.message).toBe('Registration successful!');
+    expect(component.registerForm.reset).toHaveBeenCalled();
 
     tick(1500); // simulate setTimeout
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
@@ -66,8 +69,8 @@ describe('RegisterComponent', () => {
 
     component.registerForm.setValue({
       username: 'existinguser',
-      email: 'existing@example.com',
-      password: 'password123'
+      email: 'existing@test.com',
+      password: 'testtest'
     });
 
     component.onSubmit();
@@ -83,7 +86,7 @@ describe('RegisterComponent', () => {
 
     component.registerForm.setValue({
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@test.com',
       password: 'password123'
     });
 
@@ -98,12 +101,25 @@ describe('RegisterComponent', () => {
 
     component.registerForm.setValue({
       username: 'testuser',
-      email: 'test@example.com',
+      email: 'test@test.com',
       password: 'password123'
     });
 
     component.onSubmit();
 
     expect(component.message).toBe('An error occurred. Please try again.');
+  });
+
+  it('should show validation error if form is invalid', () => {
+    component.registerForm.setValue({
+      username: '',
+      email: '',
+      password: ''
+    });
+
+    component.onSubmit();
+
+    expect(component.isSuccess).toBeFalse();
+    expect(component.message).toBe('Please fix errors before submitting.');
   });
 });
