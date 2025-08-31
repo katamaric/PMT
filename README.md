@@ -57,7 +57,7 @@ docker-compose up -d
 - Frontend: [http://localhost:4200](http://localhost:4200)
 - Swagger UI API Documentation : http://localhost:8080/swagger-ui/index.html
 
-Note: To ensure latest frontend changes are displayed, please don't forget to try :
+### To ensure latest changes are displayed, please don't forget to give it a few moments to ensure the back is up for proper error handling with docker and do this to refresh the front :
 
 - Ctrl + Shift + R / Cmd + Shift + R to force refresh if using Chrome
 - Or to use a private window if using Safari to have a clean cache
